@@ -1,0 +1,4 @@
+node_modules/
+.env
+keyboard_capture.txt
+
