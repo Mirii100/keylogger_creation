@@ -2,8 +2,18 @@ dwwrrw33sssfsewrthis is the output am i gerring from terminal Key.shift_r"vKey.s
 Key.shift_r"vKey.shift_r"cd ../
 ls
 git staus Key.leftKey.leftKey.leftt
+clear
+git add .
+git commit -m Key.shift_r" changes  to the files Key.shift_r"
+git push -u origin main
+gitKey.right
 dwwrrw33sssfsewrthis is the output am i gerring from terminal Key.shift_r"vKey.shift_r"Key.left,but it is not written in file,{recursiveKey.shift_r:true,utf8ccKey.up
 Key.shift_r"vKey.shift_r"cd ../
 ls
 git staus Key.leftKey.leftKey.leftt
+clear
+git add .
+git commit -m Key.shift_r" changes  to the files Key.shift_r"
+git push -u origin main
+gitKey.right
 
